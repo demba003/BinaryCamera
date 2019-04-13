@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent">
+
+    <TextureView
+            android:layout_width="0dp"
+            android:layout_height="224dp"
+            android:id="@+id/textureView"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"
+    />
+    <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" app:layout_constraintEnd_toStartOf="@+id/textView"
+            android:layout_marginEnd="8dp"/>
+    <Button
+            android:text="Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@+id/button2"/>
+    <Button
+            android:text="Bradley"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button2"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/seekBar"
+            app:layout_constraintStart_toEndOf="@+id/button"
+            android:layout_marginStart="8dp"
+    />
+
+    <Button
+            android:text="Sauvola"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button4"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/seekBar"
+            app:layout_constraintEnd_toStartOf="@+id/button3"
+            android:layout_marginEnd="8dp"/>
+
+    <Button
+            android:text="Otsu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button3"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintTop_toTopOf="@+id/button4"
+    />
+    <TextView
+            android:text="0.15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="@+id/seekBar"
+            app:layout_constraintTop_toTopOf="@+id/seekBar"/>
+    <TextView
+            android:text="FPS:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView2" app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@+id/switch1" app:layout_constraintBottom_toBottomOf="@+id/switch1"/>
+    <TextView
+            android:id="@+id/fpsCounter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@+id/switch1"
+            app:layout_constraintBottom_toBottomOf="@+id/switch1"
+            tools:text="30"/>
+    <Switch
+            android:text="Multicore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/switch1" app:layout_constraintStart_toEndOf="@+id/fpsCounter"
+            android:layout_marginStart="24dp" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/button2"
+            android:showText="false" android:splitTrack="false" tools:checked="true"/>
+
+    <TextView
+            android:id="@+id/fpsCounter2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/switch1"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@+id/switch1"
+            app:layout_constraintBottom_toBottomOf="@+id/switch1"
+            tools:text="30"/>
+
+    <ImageView
+            android:layout_width="0dp"
+            android:layout_height="243dp"
+            android:id="@+id/imageView" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/textureView" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
