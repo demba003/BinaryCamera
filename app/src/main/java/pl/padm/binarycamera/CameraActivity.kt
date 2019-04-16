@@ -54,12 +54,19 @@ class CameraActivity : Activity() {
 
         parameters.setRecordingHint(true)
         parameters.colorEffect = Camera.Parameters.EFFECT_MONO
-        parameters.setPreviewSize(800, 480)
+        parameters.setPreviewSize(1920, 1080)
         parameters.focusMode = FOCUS_MODE_CONTINUOUS_PICTURE
         camera.parameters = parameters
 
         camera.setPreviewTexture(surfaceTexture)
-        camera.setPreviewCallback(PreviewCallback(this::updateImage, this::updateProcessedFps))
+        camera.setPreviewCallback(
+            PreviewCallback(
+                this::updateImage,
+                this::updateProcessedFps,
+                parameters.previewSize.width,
+                parameters.previewSize.height
+            )
+        )
 
         camera.startPreview()
     }
