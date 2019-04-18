@@ -21,8 +21,10 @@ class CameraActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
-        textureView.surfaceTextureListener = SurfaceListener(this::updateFps, this::initCamera)
+        camera = Camera.open()
+        textureView.surfaceTextureListener = SurfaceListener(this::updateFps, this::initCameraPreview)
         initSeekBar()
+        initResolutionPicker(camera.parameters.supportedPreviewSizes)
     }
 
     override fun onDestroy() {
@@ -70,22 +72,24 @@ class CameraActivity : Activity() {
         resolutions.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {}
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                camera.stopPreview()
+                camera.setPreviewCallback(null)
+                val params = camera.parameters
+                params.setPreviewSize(sizes[position].width, sizes[position].height)
+                camera.parameters = params
+                initCamera()
+            }
         }
     }
 
-    private fun initCamera(surfaceTexture: SurfaceTexture) {
-        camera = Camera.open()
-
+    private fun initCamera() {
         val parameters = camera.parameters
-        parameters.supportedPreviewSizes.forEach { println("${it.width}x${it.height}") }
         parameters.setRecordingHint(true)
         parameters.colorEffect = Camera.Parameters.EFFECT_MONO
-        parameters.setPreviewSize(1280, 720)
         parameters.focusMode = FOCUS_MODE_CONTINUOUS_PICTURE
         camera.parameters = parameters
 
-        camera.setPreviewTexture(surfaceTexture)
         camera.setPreviewCallback(
             PreviewCallback(
                 this::updateImage,
@@ -95,7 +99,10 @@ class CameraActivity : Activity() {
             )
         )
 
-        initResolutionPicker(parameters.supportedPreviewSizes)
         camera.startPreview()
+    }
+
+    private fun initCameraPreview(surfaceTexture: SurfaceTexture) {
+        camera.setPreviewTexture(surfaceTexture)
     }
 }
