@@ -134,6 +134,7 @@
             app:layout_constraintTop_toTopOf="@+id/switch1"
             app:layout_constraintBottom_toBottomOf="@+id/switch1"
             app:layout_constraintStart_toEndOf="@+id/switch1"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="8dp"
+            android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

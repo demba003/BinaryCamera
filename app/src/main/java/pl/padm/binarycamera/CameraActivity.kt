@@ -13,6 +13,7 @@ import pl.padm.binarycamera.camera.PreviewCallback
 import pl.padm.binarycamera.camera.SurfaceListener
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
+import pl.padm.binarycamera.processor.BradleyProcessor
 
 
 class CameraActivity : Activity() {
@@ -25,6 +26,7 @@ class CameraActivity : Activity() {
         textureView.surfaceTextureListener = SurfaceListener(this::updateFps, this::initCameraPreview)
         initSeekBar()
         initResolutionPicker(camera.parameters.supportedPreviewSizes)
+        initCamera()
     }
 
     override fun onDestroy() {
@@ -73,12 +75,12 @@ class CameraActivity : Activity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                camera.stopPreview()
-                camera.setPreviewCallback(null)
-                val params = camera.parameters
-                params.setPreviewSize(sizes[position].width, sizes[position].height)
-                camera.parameters = params
-                initCamera()
+//                camera.stopPreview()
+//                camera.setPreviewCallback(null)
+//                val params = camera.parameters
+//                params.setPreviewSize(sizes[position].width, sizes[position].height)
+//                camera.parameters = params
+//                initCamera()
             }
         }
     }
@@ -88,12 +90,14 @@ class CameraActivity : Activity() {
         parameters.setRecordingHint(true)
         parameters.colorEffect = Camera.Parameters.EFFECT_MONO
         parameters.focusMode = FOCUS_MODE_CONTINUOUS_PICTURE
+        parameters.setPreviewSize(800, 480)
         camera.parameters = parameters
 
         camera.setPreviewCallback(
             PreviewCallback(
                 this::updateImage,
                 this::updateProcessedFps,
+                BradleyProcessor(),
                 parameters.previewSize.width,
                 parameters.previewSize.height
             )
