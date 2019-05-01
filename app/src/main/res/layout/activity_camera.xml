@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/button2"
+            app:layout_constraintBottom_toTopOf="@+id/bradleyButton"
             android:showText="false"
             android:splitTrack="false"
             android:layout_marginStart="8dp"
@@ -64,43 +64,43 @@
             android:checked="true"/>
 
     <Button
-            android:id="@+id/button"
-            android:text="Normal"
+            android:id="@+id/simpleButton"
+            android:text="Simple"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"
-            app:layout_constraintTop_toTopOf="@+id/button2"/>
+            app:layout_constraintTop_toTopOf="@+id/bradleyButton"/>
 
     <Button
-            android:id="@+id/button2"
+            android:id="@+id/bradleyButton"
             android:text="Bradley"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@+id/seekBar"
-            app:layout_constraintStart_toEndOf="@+id/button"
+            app:layout_constraintStart_toEndOf="@+id/simpleButton"
             android:layout_marginStart="8dp"
             />
 
     <Button
-            android:id="@+id/button4"
+            android:id="@+id/sauvolaButton"
             android:text="Sauvola"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@+id/seekBar"
-            app:layout_constraintEnd_toStartOf="@+id/button3"
+            app:layout_constraintEnd_toStartOf="@+id/otsuButton"
             android:layout_marginEnd="8dp"/>
 
     <Button
-            android:id="@+id/button3"
+            android:id="@+id/otsuButton"
             android:text="Otsu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp"
-            app:layout_constraintTop_toTopOf="@+id/button4"
+            app:layout_constraintTop_toTopOf="@+id/sauvolaButton"
             />
 
     <SeekBar

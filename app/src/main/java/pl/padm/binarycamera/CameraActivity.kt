@@ -14,6 +14,7 @@ import pl.padm.binarycamera.camera.SurfaceListener
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import pl.padm.binarycamera.processor.BradleyProcessor
+import pl.padm.binarycamera.processor.Processor
 import pl.padm.binarycamera.processor.SauvolaProcessor
 import pl.padm.binarycamera.processor.SimpleProcessor
 
@@ -29,6 +30,13 @@ class CameraActivity : Activity() {
         initSeekBar()
         initResolutionPicker(camera.parameters.supportedPreviewSizes)
         initCamera()
+        initButtons()
+    }
+
+    private fun initButtons() {
+        simpleButton.setOnClickListener { setProcessingMethod(SimpleProcessor()) }
+        bradleyButton.setOnClickListener { setProcessingMethod(BradleyProcessor()) }
+        sauvolaButton.setOnClickListener { setProcessingMethod(SauvolaProcessor()) }
     }
 
     override fun onDestroy() {
@@ -56,6 +64,21 @@ class CameraActivity : Activity() {
         this@CameraActivity.runOnUiThread {
             fpsCounterProcessed.text = with("%2.2f") { format(fps) }
         }
+    }
+
+    private fun setProcessingMethod(processor: Processor) {
+        camera.stopPreview()
+        val parameters = camera.parameters
+        camera.setPreviewCallback(
+            PreviewCallback(
+                this::updateImage,
+                this::updateProcessedFps,
+                processor,
+                parameters.previewSize.width,
+                parameters.previewSize.height
+            )
+        )
+        camera.startPreview()
     }
 
     private fun initSeekBar() {
@@ -95,17 +118,7 @@ class CameraActivity : Activity() {
         parameters.setPreviewSize(800, 480)
         camera.parameters = parameters
 
-        camera.setPreviewCallback(
-            PreviewCallback(
-                this::updateImage,
-                this::updateProcessedFps,
-                SimpleProcessor(),
-                parameters.previewSize.width,
-                parameters.previewSize.height
-            )
-        )
-
-        camera.startPreview()
+        setProcessingMethod(SimpleProcessor())
     }
 
     private fun initCameraPreview(surfaceTexture: SurfaceTexture) {
