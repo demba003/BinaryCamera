@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">BinaryCamera</string>
+    <string name="frame_buffer">Frame buffer</string>
+    <string name="simple">Simple</string>
+    <string name="bradley">Bradley</string>
+    <string name="sauvola">Sauvola</string>
+    <string name="otsu">Otsu</string>
+    <string name="multicore_processing">Multicore processing</string>
+    <string name="processed_image">Processed image</string>
+    <string name="factor">Factor</string>
 </resources>

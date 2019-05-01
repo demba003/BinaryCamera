@@ -21,15 +21,16 @@ import pl.padm.binarycamera.processor.SimpleProcessor
 @ExperimentalUnsignedTypes
 class CameraActivity : Activity() {
     private lateinit var camera: Camera
+    private lateinit var previewCallback: PreviewCallback
+    private var processor: Processor = SimpleProcessor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
-        camera = Camera.open()
-        textureView.surfaceTextureListener = SurfaceListener(this::updateFps, this::initCameraPreview)
-        initSeekBar()
-        initResolutionPicker(camera.parameters.supportedPreviewSizes)
         initCamera()
+        initSeekBar()
+        initFrameBufferSlider()
+        initResolutionPicker(camera.parameters.supportedPreviewSizes)
         initButtons()
     }
 
@@ -68,27 +69,35 @@ class CameraActivity : Activity() {
 
     private fun setProcessingMethod(processor: Processor) {
         camera.stopPreview()
-        val parameters = camera.parameters
-        camera.setPreviewCallback(
-            PreviewCallback(
-                this::updateImage,
-                this::updateProcessedFps,
-                processor,
-                parameters.previewSize.width,
-                parameters.previewSize.height
-            )
+        this.processor = processor
+        val previewSize = camera.parameters.previewSize
+        previewCallback = PreviewCallback(
+            this::updateImage,
+            this::updateProcessedFps,
+            this.processor,
+            previewSize.width,
+            previewSize.height
         )
+        camera.setPreviewCallback(previewCallback)
         camera.startPreview()
     }
 
     private fun initSeekBar() {
-        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        seekBar.setOnSeekBarChangeListener(object : SimpleSeekBarListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 factor.text = with("%1.2f") { format(progress / 100.0) }
+                processor.factor = progress / 100.0
             }
+        })
+    }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+    private fun initFrameBufferSlider() {
+        frameBufferSlider.setOnSeekBarChangeListener(object : SimpleSeekBarListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val value = progress + 1
+                frameBufferText.text = value.toString()
+                previewCallback.frameBufferSize = value
+            }
         })
     }
 
@@ -111,6 +120,9 @@ class CameraActivity : Activity() {
     }
 
     private fun initCamera() {
+        camera = Camera.open()
+        textureView.surfaceTextureListener = SurfaceListener(this::updateFps, this::initCameraPreview)
+
         val parameters = camera.parameters
         parameters.setRecordingHint(true)
         parameters.colorEffect = Camera.Parameters.EFFECT_MONO

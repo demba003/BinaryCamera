@@ -6,7 +6,7 @@ import java.io.ByteArrayOutputStream
 
 @ExperimentalUnsignedTypes
 abstract class Processor {
-    private val THREADS = 8
+    var factor = 0.15
 
     protected abstract fun threshold(frame: Frame, x: Int, y: Int, size: Int, area: UInt): UInt
     protected abstract fun prepareFrame(frame: Frame)
@@ -41,5 +41,9 @@ abstract class Processor {
         yuv.compressToJpeg(Rect(0, 0, frame.width, frame.height), 50, out)
         val bytes = out.toByteArray()
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+    }
+
+    companion object {
+        private const val THREADS = 8
     }
 }

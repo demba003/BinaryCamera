@@ -2,7 +2,6 @@ package pl.padm.binarycamera.processor
 
 import pl.padm.binarycamera.camera.Frame
 
-
 @ExperimentalUnsignedTypes
 class SauvolaProcessor : Processor() {
     override fun prepareFrame(frame: Frame) {
@@ -20,6 +19,6 @@ class SauvolaProcessor : Processor() {
         val avg = frame.getIntegralAverage(myX, myY, size, area).toDouble()
         val variance = frame.getIntegralSquareAverage(myX, myY, size, area).toDouble() - avg * avg
         val sd = if (variance <= 0.0) 0.0 else Math.sqrt(variance)
-        return (avg * (1 + 0.12 * (sd / 128 - 1.0))).toUInt()
+        return (avg * (1 + factor * (sd / 128 - 1.0))).toUInt()
     }
 }

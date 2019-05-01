@@ -2,10 +2,9 @@ package pl.padm.binarycamera.processor
 
 import pl.padm.binarycamera.camera.Frame
 
-
 @ExperimentalUnsignedTypes
 class BradleyProcessor : Processor() {
-    override fun prepareFrame(frame: Frame) {
+    override  fun prepareFrame(frame: Frame) {
         frame.calculateIntegral()
     }
 
@@ -18,6 +17,6 @@ class BradleyProcessor : Processor() {
         if (y > frame.width - size - 1) myY = frame.width - size - 1
 
         val average = frame.getIntegralAverage(myX, myY, size, area).toDouble()
-        return (average * (1 - 0.11)).toUInt()
+        return (average * (1 - factor)).toUInt()
     }
 }
