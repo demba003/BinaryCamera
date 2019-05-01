@@ -9,7 +9,7 @@ data class Frame(
     val integral: UIntArray = UIntArray(width * height),
     val integralSquare: UIntArray = UIntArray(width * height)
 ) {
-    fun calculateIntegrals() {
+    fun calculateIntegral() {
         for (row in 0 until height) {
             var sum: UInt = 0u
             var sumSquare: UInt = 0u
@@ -18,10 +18,26 @@ data class Frame(
                 sumSquare = sumSquare + data[column + width * row] * data[column + width * row]
                 if (row == 0) {
                     integral[column + width * row] = sum
-//                    integralSquare[column + width * row] = sumSquare
                 } else {
                     integral[column + width * row] = integral[column + width * (row - 1)] + sum
-//                    integralSquare[column + width * row] = integralSquare[column + width * (row - 1)] + sumSquare
+                }
+            }
+        }
+    }
+
+    fun calculateIntegralAndSquare() {
+        for (row in 0 until height) {
+            var sum: UInt = 0u
+            var sumSquare: UInt = 0u
+            for (column in 0 until width) {
+                sum = sum + data[column + width * row]
+                sumSquare = sumSquare + data[column + width * row] * data[column + width * row]
+                if (row == 0) {
+                    integral[column + width * row] = sum
+                    integralSquare[column + width * row] = sumSquare
+                } else {
+                    integral[column + width * row] = integral[column + width * (row - 1)] + sum
+                    integralSquare[column + width * row] = integralSquare[column + width * (row - 1)] + sumSquare
                 }
             }
         }
@@ -35,13 +51,13 @@ data class Frame(
         return data[x + width * y]
     }
 
-    fun getIntegral(x: Int, y: Int): UInt {
+    private fun getIntegral(x: Int, y: Int): UInt {
             return integral[y + width * x]
     }
 
-//    fun getIntegralSquare(x: Int, y: Int): UInt {
-//        return integralSquare[x + width * y]
-//    }
+    private fun getIntegralSquare(x: Int, y: Int): UInt {
+        return integralSquare[y + width * x]
+    }
 
     fun getIntegralAverage(x: Int, y: Int, size: Int, area: UInt): UByte {
         val one = getIntegral(x + size, y + size)
@@ -51,11 +67,11 @@ data class Frame(
         return ((one + two - three - four) / area).toUByte()
     }
 
-//    fun getIntegralSquareAverage(x: Int, y: Int, size: Int, area: UInt): UByte {
-//        val one = getIntegralSquare(x + size, y + size)
-//        val two = getIntegralSquare(x - size - 1, y - size - 1)
-//        val three = getIntegralSquare(x - size - 1, y + size)
-//        val four = getIntegralSquare(x + size, y - size - 1)
-//        return ((one + two - three - four) / area).toUByte()
-//    }
+    fun getIntegralSquareAverage(x: Int, y: Int, size: Int, area: UInt): UByte {
+        val one = getIntegralSquare(x + size, y + size)
+        val two = getIntegralSquare(x - size - 1, y - size - 1)
+        val three = getIntegralSquare(x - size - 1, y + size)
+        val four = getIntegralSquare(x + size, y - size - 1)
+        return ((one + two - three - four) / area).toUByte()
+    }
 }

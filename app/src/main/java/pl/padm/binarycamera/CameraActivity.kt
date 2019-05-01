@@ -14,8 +14,10 @@ import pl.padm.binarycamera.camera.SurfaceListener
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import pl.padm.binarycamera.processor.BradleyProcessor
+import pl.padm.binarycamera.processor.SauvolaProcessor
+import pl.padm.binarycamera.processor.SimpleProcessor
 
-
+@ExperimentalUnsignedTypes
 class CameraActivity : Activity() {
     private lateinit var camera: Camera
 
@@ -97,7 +99,7 @@ class CameraActivity : Activity() {
             PreviewCallback(
                 this::updateImage,
                 this::updateProcessedFps,
-                BradleyProcessor(),
+                SimpleProcessor(),
                 parameters.previewSize.width,
                 parameters.previewSize.height
             )

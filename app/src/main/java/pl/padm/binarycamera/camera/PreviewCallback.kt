@@ -9,8 +9,14 @@ import java.util.concurrent.atomic.AtomicLong
 typealias DrawCallback = (Bitmap) -> Unit
 typealias FpsCallback = (Double) -> Unit
 
-class PreviewCallback(val draw: DrawCallback, val fps: FpsCallback, val processor: Processor, private val width: Int, private val height: Int) :
-    Camera.PreviewCallback {
+@ExperimentalUnsignedTypes
+class PreviewCallback(
+    val draw: DrawCallback,
+    val fps: FpsCallback,
+    val processor: Processor,
+    private val width: Int,
+    private val height: Int
+) : Camera.PreviewCallback {
     private var lastUpdate: AtomicLong = AtomicLong(0)
     private var counter = AtomicInteger(0)
 

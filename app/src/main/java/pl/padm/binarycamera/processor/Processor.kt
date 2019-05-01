@@ -6,14 +6,15 @@ import java.io.ByteArrayOutputStream
 
 @ExperimentalUnsignedTypes
 abstract class Processor {
-    val THREADS = 8
+    private val THREADS = 8
 
     protected abstract fun threshold(frame: Frame, x: Int, y: Int, size: Int, area: UInt): UInt
+    protected abstract fun prepareFrame(frame: Frame)
 
     private fun binarizeFrame(frame: Frame) {
+        prepareFrame(frame)
         val size = 7
         val area = ((2 * size + 1) * (2 * size + 1)).toUInt()
-        frame.calculateIntegrals()
         val threads = mutableListOf<Thread>()
 
         for (threadId in 0 until THREADS) {
