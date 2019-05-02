@@ -13,16 +13,17 @@ import pl.padm.binarycamera.camera.PreviewCallback
 import pl.padm.binarycamera.camera.SurfaceListener
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
-import pl.padm.binarycamera.processor.BradleyProcessor
-import pl.padm.binarycamera.processor.Processor
-import pl.padm.binarycamera.processor.SauvolaProcessor
-import pl.padm.binarycamera.processor.SimpleProcessor
+import pl.padm.binarizer.processor.jvm.BradleyProcessor
+import pl.padm.binarizer.processor.Processor
+import pl.padm.binarizer.processor.jvm.SauvolaProcessor
+import pl.padm.binarizer.processor.jvm.SimpleProcessor
+import pl.padm.binarizer.processor.native.SimpleNativeProcessor
 
 @ExperimentalUnsignedTypes
 class CameraActivity : Activity() {
     private lateinit var camera: Camera
     private lateinit var previewCallback: PreviewCallback
-    private var processor: Processor = SimpleProcessor()
+    private var processor: Processor = SimpleNativeProcessor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

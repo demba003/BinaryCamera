@@ -1,9 +1,9 @@
-package pl.padm.binarycamera.processor
+package pl.padm.binarizer.processor.jvm
 
-import pl.padm.binarycamera.camera.Frame
+import pl.padm.binarizer.Frame
 
 @ExperimentalUnsignedTypes
-class SimpleProcessor : Processor() {
+class SimpleProcessor : JVMProcessor() {
     override fun prepareFrame(frame: Frame) {}
 
     override fun threshold(frame: Frame, x: Int, y: Int, size: Int, area: UInt): UInt = 128u

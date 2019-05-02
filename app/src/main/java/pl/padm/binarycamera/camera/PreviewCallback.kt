@@ -2,7 +2,8 @@ package pl.padm.binarycamera.camera
 
 import android.hardware.Camera
 import android.graphics.Bitmap
-import pl.padm.binarycamera.processor.Processor
+import pl.padm.binarizer.Frame
+import pl.padm.binarizer.processor.Processor
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 

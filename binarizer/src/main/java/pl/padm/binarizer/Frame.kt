@@ -1,4 +1,4 @@
-package pl.padm.binarycamera.camera
+package pl.padm.binarizer
 
 @ExperimentalUnsignedTypes
 data class Frame(

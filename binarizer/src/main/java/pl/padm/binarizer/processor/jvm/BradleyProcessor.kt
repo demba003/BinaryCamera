@@ -1,9 +1,9 @@
-package pl.padm.binarycamera.processor
+package pl.padm.binarizer.processor.jvm
 
-import pl.padm.binarycamera.camera.Frame
+import pl.padm.binarizer.Frame
 
 @ExperimentalUnsignedTypes
-class BradleyProcessor : Processor() {
+class BradleyProcessor : JVMProcessor() {
     override  fun prepareFrame(frame: Frame) {
         frame.calculateIntegral()
     }
