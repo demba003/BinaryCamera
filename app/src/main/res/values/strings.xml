@@ -8,4 +8,7 @@
     <string name="multicore_processing">Multicore processing</string>
     <string name="processed_image">Processed image</string>
     <string name="factor">Factor</string>
+    <string name="simpleNative">Simple Native</string>
+    <string name="bradleyNative">Bradley Native</string>
+    <string name="sauvolaNative">Sauvola Native</string>
 </resources>

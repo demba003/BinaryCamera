@@ -17,13 +17,14 @@ import pl.padm.binarizer.processor.jvm.BradleyProcessor
 import pl.padm.binarizer.processor.Processor
 import pl.padm.binarizer.processor.jvm.SauvolaProcessor
 import pl.padm.binarizer.processor.jvm.SimpleProcessor
+import pl.padm.binarizer.processor.native.BradleyNativeProcessor
 import pl.padm.binarizer.processor.native.SimpleNativeProcessor
 
 @ExperimentalUnsignedTypes
 class CameraActivity : Activity() {
     private lateinit var camera: Camera
     private lateinit var previewCallback: PreviewCallback
-    private var processor: Processor = SimpleNativeProcessor()
+    private var processor: Processor = SimpleProcessor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +38,9 @@ class CameraActivity : Activity() {
 
     private fun initButtons() {
         simpleButton.setOnClickListener { setProcessingMethod(SimpleProcessor()) }
+        simpleNativeButton.setOnClickListener { setProcessingMethod(SimpleNativeProcessor()) }
         bradleyButton.setOnClickListener { setProcessingMethod(BradleyProcessor()) }
+        bradleyNativeButton.setOnClickListener { setProcessingMethod(BradleyNativeProcessor()) }
         sauvolaButton.setOnClickListener { setProcessingMethod(SauvolaProcessor()) }
     }
 

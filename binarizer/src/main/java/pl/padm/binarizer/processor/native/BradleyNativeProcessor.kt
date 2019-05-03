@@ -4,17 +4,20 @@ import pl.padm.binarizer.Frame
 import pl.padm.binarizer.processor.Processor
 
 @ExperimentalUnsignedTypes
-class SimpleNativeProcessor : Processor() {
-    override fun prepareFrame(frame: Frame) {}
+class BradleyNativeProcessor : Processor() {
+    override fun prepareFrame(frame: Frame) {
+        frame.calculateIntegral()
+    }
 
     override fun threshold(frame: Frame, x: Int, y: Int, size: Int, area: UInt): UInt {
         throw UnsupportedOperationException()
     }
 
-    private external fun binarizeData(data: ByteArray, width: Int, height: Int): ByteArray
+    private external fun binarizeData(data: ByteArray, integral: IntArray, width: Int, height: Int): ByteArray
 
     override fun binarizeFrame(frame: Frame) {
-        binarizeData(frame.data.toByteArray(), frame.width, frame.height).toUByteArray().copyInto(frame.binarized)
+        prepareFrame(frame)
+        binarizeData(frame.data.toByteArray(), frame.integral.toIntArray(), frame.width, frame.height).toUByteArray().copyInto(frame.binarized)
     }
 
     companion object {

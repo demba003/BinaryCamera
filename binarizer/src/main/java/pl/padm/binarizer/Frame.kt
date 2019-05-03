@@ -5,7 +5,7 @@ data class Frame(
     val data: UByteArray,
     val width: Int,
     val height: Int,
-    val binarized: UByteArray = data.copyOf(),
+    var binarized: UByteArray = data.copyOf(),
     val integral: UIntArray = UIntArray(width * height),
     val integralSquare: UIntArray = UIntArray(width * height)
 ) {
