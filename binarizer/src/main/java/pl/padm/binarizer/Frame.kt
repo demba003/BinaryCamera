@@ -2,7 +2,7 @@ package pl.padm.binarizer
 
 @ExperimentalUnsignedTypes
 data class Frame(
-    val data: UByteArray,
+    var data: UByteArray,
     val width: Int,
     val height: Int,
     var binarized: UByteArray = data.copyOf(),

@@ -18,6 +18,7 @@ import pl.padm.binarizer.processor.Processor
 import pl.padm.binarizer.processor.jvm.SauvolaProcessor
 import pl.padm.binarizer.processor.jvm.SimpleProcessor
 import pl.padm.binarizer.processor.native.BradleyNativeProcessor
+import pl.padm.binarizer.processor.native.SauvolaNativeProcessor
 import pl.padm.binarizer.processor.native.SimpleNativeProcessor
 
 @ExperimentalUnsignedTypes
@@ -42,6 +43,7 @@ class CameraActivity : Activity() {
         bradleyButton.setOnClickListener { setProcessingMethod(BradleyProcessor()) }
         bradleyNativeButton.setOnClickListener { setProcessingMethod(BradleyNativeProcessor()) }
         sauvolaButton.setOnClickListener { setProcessingMethod(SauvolaProcessor()) }
+        sauvolaNativeButton.setOnClickListener { setProcessingMethod(SauvolaNativeProcessor()) }
     }
 
     override fun onDestroy() {
@@ -131,7 +133,8 @@ class CameraActivity : Activity() {
         parameters.setRecordingHint(true)
         parameters.colorEffect = Camera.Parameters.EFFECT_MONO
         parameters.focusMode = FOCUS_MODE_CONTINUOUS_PICTURE
-        parameters.setPreviewSize(800, 480)
+        val maxSize = parameters.supportedPreviewSizes[0]
+        parameters.setPreviewSize(maxSize.width, maxSize.height)
         camera.parameters = parameters
 
         setProcessingMethod(SimpleProcessor())

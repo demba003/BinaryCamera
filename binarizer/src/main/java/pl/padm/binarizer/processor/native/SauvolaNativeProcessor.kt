@@ -3,9 +3,9 @@ package pl.padm.binarizer.processor.native
 import pl.padm.binarizer.Frame
 
 @ExperimentalUnsignedTypes
-class BradleyNativeProcessor : NativeProcessor() {
+class SauvolaNativeProcessor : NativeProcessor() {
     override fun prepareFrame(frame: Frame) {
-        frame.calculateIntegral()
+        frame.calculateIntegralAndSquare()
     }
 
     override fun threshold(frame: Frame, x: Int, y: Int, size: Int, area: UInt): UInt {
@@ -15,6 +15,7 @@ class BradleyNativeProcessor : NativeProcessor() {
     private external fun binarizeData(
         data: ByteArray,
         integral: LongArray,
+        integralSquare: LongArray,
         width: Int,
         height: Int,
         factor: Double,
@@ -28,6 +29,7 @@ class BradleyNativeProcessor : NativeProcessor() {
         binarizeData(
             frame.data.toByteArray(),
             frame.integral.map { it.toLong() }.toLongArray(),
+            frame.integralSquare.map { it.toLong() }.toLongArray(),
             frame.width,
             frame.height,
             factor,
