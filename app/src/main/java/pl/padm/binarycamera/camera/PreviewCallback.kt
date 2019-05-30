@@ -16,11 +16,12 @@ class PreviewCallback(
     private val fps: FpsCallback,
     private val processor: Processor,
     private val width: Int,
-    private val height: Int
+    private val height: Int,
+    var frameBufferSize: Int = 4
 ) : Camera.PreviewCallback {
     private var lastUpdate: AtomicLong = AtomicLong(0)
     private var counter = AtomicInteger(0)
-    var frameBufferSize = 4
+
 
     override fun onPreviewFrame(data: ByteArray, camera: Camera) {
         if (counter.get() < frameBufferSize) {

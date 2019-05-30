@@ -8,10 +8,6 @@ class SauvolaNativeProcessor : NativeProcessor() {
         frame.calculateIntegralAndSquare()
     }
 
-    override fun threshold(frame: Frame, x: Int, y: Int, size: Int, area: UInt): UInt {
-        throw UnsupportedOperationException()
-    }
-
     private external fun binarizeData(
         data: ByteArray,
         integral: LongArray,

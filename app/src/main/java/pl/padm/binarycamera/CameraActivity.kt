@@ -82,7 +82,8 @@ class CameraActivity : Activity() {
             this::updateProcessedFps,
             this.processor,
             previewSize.width,
-            previewSize.height
+            previewSize.height,
+            frameBufferSlider.progress + 1
         )
         camera.setPreviewCallback(previewCallback)
         camera.startPreview()
@@ -135,6 +136,7 @@ class CameraActivity : Activity() {
         parameters.focusMode = FOCUS_MODE_CONTINUOUS_PICTURE
         val maxSize = parameters.supportedPreviewSizes[0]
         parameters.setPreviewSize(maxSize.width, maxSize.height)
+//        parameters.setPreviewSize(800, 480)
         camera.parameters = parameters
 
         setProcessingMethod(SimpleProcessor())

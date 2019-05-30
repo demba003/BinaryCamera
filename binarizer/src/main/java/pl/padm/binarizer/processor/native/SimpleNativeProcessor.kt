@@ -6,10 +6,6 @@ import pl.padm.binarizer.Frame
 class SimpleNativeProcessor : NativeProcessor() {
     override fun prepareFrame(frame: Frame) {}
 
-    override fun threshold(frame: Frame, x: Int, y: Int, size: Int, area: UInt): UInt {
-        throw UnsupportedOperationException()
-    }
-
     private external fun binarizeData(data: ByteArray, width: Int, height: Int): ByteArray
 
     override fun binarizeFrame(frame: Frame) {

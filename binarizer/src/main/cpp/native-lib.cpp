@@ -1,6 +1,18 @@
 #include <jni.h>
 #include <string>
 #include <math.h>
+#include <thread>
+
+void binarizeSimple(jbyte *frameData, jbyte *binarizedData, int width, int start, int end) {
+    for (int row = start; row < end; row++) {
+        for (int column = 0; column < width; column++) {
+            jbyte value = frameData[column + width * row];
+            jint th = 128;
+            if ((value & 0xFF) < th) binarizedData[column + width * row] = 0;
+            else binarizedData[column + width * row] = -1;
+        }
+    }
+}
 
 extern "C" JNIEXPORT jbyteArray JNICALL
 Java_pl_padm_binarizer_processor_native_SimpleNativeProcessor_binarizeData(JNIEnv *env, jobject callingObject,
@@ -8,14 +20,16 @@ Java_pl_padm_binarizer_processor_native_SimpleNativeProcessor_binarizeData(JNIEn
     jbyte *frameData = env->GetByteArrayElements(data, nullptr);
     jbyteArray binarized = env->NewByteArray(width * height);
     jbyte *binarizedData = env->GetByteArrayElements(binarized, nullptr);
+    jint THREADS = 8;
 
-    for (int row = 0; row < height; row++) {
-        for (int column = 0; column < width; column++) {
-            jbyte value = frameData[column + width * row];
-            jint th = 128;
-            if ((value & 0xFF) < th) binarizedData[column + width * row] = 0;
-            else binarizedData[column + width * row] = -1;
-        }
+    std::thread threads[THREADS];
+
+    for (int thrId = 0; thrId < THREADS; ++thrId) {
+        threads[thrId] = std::thread(binarizeSimple, frameData, binarizedData, width, height * thrId / THREADS, height * (thrId + 1) / THREADS);
+    }
+
+    for (int thrId = 0; thrId < THREADS; ++thrId) {
+        threads[thrId].join();
     }
 
     env->ReleaseByteArrayElements(data, frameData, 0);
@@ -35,7 +49,7 @@ jlong getIntegralAverage(jlong *integral, int width, int x, int y, int size, int
     return ((one + two - three - four) / area);
 }
 
-jint bradleyThreshold(jlong *integral, int width, int height, int x, int y, int size, int area, double factor) {
+jbyte bradleyThreshold(jlong *integral, int width, int height, int x, int y, int size, int area, double factor) {
     int myX = x;
     int myY = y;
     if (x < size + 1) myX = size + 1;
@@ -44,24 +58,37 @@ jint bradleyThreshold(jlong *integral, int width, int height, int x, int y, int 
     if (y > width - size - 1) myY = width - size - 1;
 
     jlong average = getIntegralAverage(integral, width, myX, myY, size, area);
-    return static_cast<jint>(average * (1 - factor));
+    return static_cast<jbyte>(average * (1 - factor));
 }
 
-//void calculateIntegral(jbyte *frame, jlong *integral, int height, int width) {
-//    for (int row = 0; row < height; row++) {
-//        long sum = 0;
-//        long sumSquare = 0;
-//        for (int column = 0; column < width; column++) {
-//            sum = sum + frame[column + width * row];
-//            sumSquare = sumSquare + frame[column + width * row] * frame[column + width * row];
-//            if (row == 0) {
-//                integral[column + width * row] = sum;
-//            } else {
-//                integral[column + width * row] = integral[column + width * (row - 1)] + sum;
-//            }
-//        }
-//    }
-//}
+void calculateIntegral(jbyte *frame, jlong *integral, int height, int width) {
+    for (int row = 0; row < height; row++) {
+        long sum = 0;
+        long sumSquare = 0;
+        for (int column = 0; column < width; column++) {
+            sum = sum + frame[column + width * row];
+            sumSquare = sumSquare + frame[column + width * row] * frame[column + width * row];
+            if (row == 0) {
+                integral[column + width * row] = sum;
+            } else {
+                integral[column + width * row] = integral[column + width * (row - 1)] + sum;
+            }
+        }
+    }
+}
+
+void binarizeBradley(jbyte *frameData, jlong *integralData, jbyte *binarizedData, int width, int height, jdouble factor,
+                     jint size, jint area, int start, int end) {
+    for (int row = start; row < end; row++) {
+        for (int column = 0; column < width; column++) {
+            jbyte value = frameData[column + width * row];
+            jbyte th = bradleyThreshold(integralData, width, height, column, row, size, area, factor);
+            if ((value & 0xFF) < th)
+                binarizedData[column + width * row] = 0;
+            else binarizedData[column + width * row] = -1;
+        }
+    }
+}
 
 extern "C" JNIEXPORT jbyteArray JNICALL
 Java_pl_padm_binarizer_processor_native_BradleyNativeProcessor_binarizeData(JNIEnv *env, jobject callingObject,
@@ -73,15 +100,18 @@ Java_pl_padm_binarizer_processor_native_BradleyNativeProcessor_binarizeData(JNIE
     jlong *integralData = env->GetLongArrayElements(integral, nullptr);
     jbyteArray binarized = env->NewByteArray(width * height);
     jbyte *binarizedData = env->GetByteArrayElements(binarized, nullptr);
+    jint THREADS = 8;
+    std::thread threads[THREADS];
 
-    for (int row = 0; row < height; row++) {
-        for (int column = 0; column < width; column++) {
-            jint value = frameData[column + width * row];
-            jint th = bradleyThreshold(integralData, width, height, column, row, size, area, factor);
-            if ((value & 0xFFFFFFFF) < th)
-                binarizedData[column + width * row] = 0;
-            else binarizedData[column + width * row] = -1;
-        }
+    calculateIntegral(frameData, integralData, height, width);
+
+    for (int thrId = 0; thrId < THREADS; ++thrId) {
+        threads[thrId] = std::thread(binarizeBradley, frameData, integralData, binarizedData, width, height, factor,
+                                     size, area, height * thrId / THREADS, height * (thrId + 1) / THREADS);
+    }
+
+    for (int thrId = 0; thrId < THREADS; ++thrId) {
+        threads[thrId].join();
     }
 
     env->ReleaseByteArrayElements(data, frameData, 0);
@@ -91,7 +121,7 @@ Java_pl_padm_binarizer_processor_native_BradleyNativeProcessor_binarizeData(JNIE
 }
 
 
-jint sauvolaThreshold(jlong *integral, jlong *integralSquare, int width, int height, int x, int y, int size, int area,
+jbyte sauvolaThreshold(jlong *integral, jlong *integralSquare, int width, int height, int x, int y, int size, int area,
                       double factor) {
     int myX = x;
     int myY = y;
@@ -104,7 +134,7 @@ jint sauvolaThreshold(jlong *integral, jlong *integralSquare, int width, int hei
     jlong variance = getIntegralAverage(integralSquare, width, myX, myY, size, area) - average * average;
     jlong sd = static_cast<jlong>(variance <= 0 ? 0 : sqrt(variance));
 
-    return static_cast<jint>(average * (1 + factor * (sd / 128 - 1.0)));
+    return static_cast<jbyte>(average * (1 + factor * (sd / 128 - 1.0)));
 }
 
 extern "C" JNIEXPORT jbyteArray JNICALL
@@ -122,9 +152,9 @@ Java_pl_padm_binarizer_processor_native_SauvolaNativeProcessor_binarizeData(JNIE
 
     for (int row = 0; row < height; row++) {
         for (int column = 0; column < width; column++) {
-            jint value = frameData[column + width * row];
-            jint th = sauvolaThreshold(integralData, integralSquareData, width, height, column, row, size, area, factor);
-            if ((value & 0xFFFFFFFF) < th)
+            jbyte value = frameData[column + width * row];
+            jbyte th = sauvolaThreshold(integralData, integralSquareData, width, height, column, row, size, area, factor);
+            if ((value & 0xFF) < th)
                 binarizedData[column + width * row] = 0;
             else binarizedData[column + width * row] = -1;
         }
