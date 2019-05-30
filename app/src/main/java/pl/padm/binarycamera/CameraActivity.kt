@@ -6,6 +6,7 @@ import android.graphics.SurfaceTexture
 import android.hardware.Camera
 import android.hardware.Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import kotlinx.android.synthetic.main.activity_camera.*
@@ -44,6 +45,13 @@ class CameraActivity : Activity() {
         bradleyNativeButton.setOnClickListener { setProcessingMethod(BradleyNativeProcessor()) }
         sauvolaButton.setOnClickListener { setProcessingMethod(SauvolaProcessor()) }
         sauvolaNativeButton.setOnClickListener { setProcessingMethod(SauvolaNativeProcessor()) }
+        otsuButton.setOnClickListener {
+            previewCallback.processedFrames.set(0)
+            Thread {
+                Thread.sleep(30000)
+                Log.i("WYNIK", previewCallback.processedFrames.get().toString())
+            }.start()
+        }
     }
 
     override fun onDestroy() {
@@ -136,6 +144,7 @@ class CameraActivity : Activity() {
         parameters.focusMode = FOCUS_MODE_CONTINUOUS_PICTURE
         val maxSize = parameters.supportedPreviewSizes[0]
         parameters.setPreviewSize(maxSize.width, maxSize.height)
+        Log.i("RESOLUTION", "${maxSize.width}x${maxSize.height}")
 //        parameters.setPreviewSize(800, 480)
         camera.parameters = parameters
 

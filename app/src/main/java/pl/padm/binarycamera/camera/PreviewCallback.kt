@@ -21,6 +21,7 @@ class PreviewCallback(
 ) : Camera.PreviewCallback {
     private var lastUpdate: AtomicLong = AtomicLong(0)
     private var counter = AtomicInteger(0)
+    var processedFrames = AtomicInteger(0)
 
 
     override fun onPreviewFrame(data: ByteArray, camera: Camera) {
@@ -32,6 +33,7 @@ class PreviewCallback(
                 val bitmap = processor.encodeFrame(frame)
                 draw(bitmap)
                 counter.decrementAndGet()
+                processedFrames.incrementAndGet()
             }.start()
         }
     }
